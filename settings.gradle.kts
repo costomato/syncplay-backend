@@ -1,0 +1,1 @@
+rootProject.name = "com.flyprosper.syncplay-backend"
