@@ -55,22 +55,29 @@ fun Application.configureSockets() {
                             if (response.err == true)
                                 send(response.convertToFrame())
                             else {
-                                val sockets =
-                                    data.roomCode?.let { data.user?.let { it1 -> ChatServer.getMembers(it, it1) } }
+                                val sockets = response.roomCode?.let {
+                                    response.user?.let { it1 ->
+                                        ChatServer.getMembers(
+                                            roomCode = it,
+                                            user = it1
+                                        )
+                                    }
+                                }
                                 sockets?.forEach {
                                     it.socket?.send(response.convertToFrame())
                                 }
                             }
-
                         }
 
                         "chat" -> {
 //                            val sockets =
 //                                data.roomCode?.let { data.user?.let { it1 -> ChatServer.getMembers(it, it1) } }
-                            val members = ChatServer.getMembers(roomCode = data.roomCode?:"",
-                                user = User(data.user?.name?:"", data.user?.isAdmin?:true, this))
+                            val members = ChatServer.getMembers(
+                                roomCode = data.roomCode ?: "",
+                                user = User(data.user?.name ?: "", data.user?.isAdmin ?: true, this)
+                            )
                             if (members == null)
-                                send(MessageData("chat", message = "User-Room mismatch", err=true).convertToFrame())
+                                send(MessageData("chat", message = "User-Room mismatch", err = true).convertToFrame())
                             else
                                 members.forEach {
                                     if (it.name != data.user?.name)
