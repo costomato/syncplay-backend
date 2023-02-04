@@ -94,7 +94,13 @@ fun Application.configureSockets() {
                             if (data.user?.isAdmin == true) {
                                 val sockets = data.roomCode?.let { ChatServer.getMembers(it, data.user) }
                                 if (sockets == null)
-                                    send(MessageData("media-sync", message = "User-Room mismatch").convertToFrame())
+                                    send(
+                                        MessageData(
+                                            "media-sync",
+                                            message = "User-Room mismatch",
+                                            err = true
+                                        ).convertToFrame()
+                                    )
                                 else {
                                     ChatServer.mediaSync(data)
                                     sockets.forEach {

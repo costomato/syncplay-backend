@@ -22,11 +22,18 @@ object ChatServer {
 
         val randomName = getRandomName()
         val newUser = User(randomName, user.isAdmin, user.socket)
-        rooms[roomCode] = Room(creator = newUser, members = mutableListOf(newUser), appVersion = data.appVersion)
+        rooms[roomCode] = Room(
+            creator = newUser,
+            members = mutableListOf(newUser),
+            videoInRoom = data.message,
+            isVideoPlaying = true,
+            appVersion = data.appVersion,
+            currentTime = 0 // would have been gone far ahead by the time next user joins. So... lets see
+        )
         println("Room created with code: $roomCode")
         return MessageData(
             channel = "create-room", user = newUser, roomCode = roomCode,
-            message = data.message, info = data.info, nUsers = 1, isVideoPlaying = false, currentTime = 0
+            message = data.message, info = data.info, nUsers = 1, isVideoPlaying = true, currentTime = 0
         )
     }
 
@@ -53,7 +60,7 @@ object ChatServer {
                 channel = "join-room",
                 user = User(randomName, user.isAdmin),
                 roomCode = data.roomCode,
-                message = data.message,
+                message = rooms[data.roomCode]?.videoInRoom ?: "",
                 info = data.info,
                 nUsers = rooms[data.roomCode]?.members?.size,
                 isVideoPlaying = rooms[data.roomCode]?.isVideoPlaying,
