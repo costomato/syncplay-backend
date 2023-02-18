@@ -86,7 +86,7 @@ object ChatServer {
 
     fun disconnect(roomCode: String?, user: User?): List<User>? {
         if (rooms[roomCode]?.members?.any { it.name == user?.name } == true)
-            rooms[roomCode]?.members?.remove(user)
+            rooms[roomCode]?.members?.removeIf { it.name == user?.name }
         if (rooms[roomCode]?.members?.isEmpty() == true)
             rooms.remove(roomCode)
         return rooms[roomCode]?.members
