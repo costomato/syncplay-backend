@@ -84,12 +84,12 @@ object ChatServer {
         rooms[data.roomCode]?.isVideoPlaying = data.isVideoPlaying
     }
 
-    fun disconnect(roomCode: String?, user: User?) {
-        val room = rooms[roomCode]
-        if (room?.members?.contains(user) == true)
+    fun disconnect(roomCode: String?, user: User?): List<User>? {
+        if (rooms[roomCode]?.members?.any { it.name == user?.name } == true)
             rooms[roomCode]?.members?.remove(user)
         if (rooms[roomCode]?.members?.isEmpty() == true)
             rooms.remove(roomCode)
+        return rooms[roomCode]?.members
     }
 
     private fun getRandomName(): String = Faker().funnyName().name()

@@ -6,5 +6,5 @@ data class Room(
     val appVersion: String? = null,
     val videoInRoom: String? = null,
     var isVideoPlaying: Boolean? = null,
-    var currentTime: Int? = null
+    var currentTime: Long? = null
 )

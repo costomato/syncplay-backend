@@ -86,8 +86,11 @@ fun Application.configureSockets() {
                         }
 
                         "exit-room" -> {
-                            ChatServer.disconnect(data.roomCode, data.user)
+                            val members = ChatServer.disconnect(data.roomCode, data.user)
                             close(CloseReason(CloseReason.Codes.NORMAL, "A user disconnected"))
+                            members?.forEach {
+                                it.socket?.send(data.convertToFrame())
+                            }
                         }
 
                         "media-sync" -> {
