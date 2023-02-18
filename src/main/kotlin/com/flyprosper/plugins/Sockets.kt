@@ -87,7 +87,6 @@ fun Application.configureSockets() {
 
                         "exit-room" -> {
                             val members = ChatServer.disconnect(data.roomCode, data.user)
-                            close(CloseReason(CloseReason.Codes.NORMAL, "A user disconnected"))
                             members?.forEach {
                                 it.socket?.send(data.convertToFrame())
                             }
