@@ -11,7 +11,7 @@ data class MessageData(
     val err: Boolean? = false,
     val appVersion: String? = null,
     val info: String? = null,
-    val nUsers: Int? = null,
+    var nUsers: Int? = null,
     val isVideoPlaying: Boolean? = null,
     val currentTime: Long? = null
 )

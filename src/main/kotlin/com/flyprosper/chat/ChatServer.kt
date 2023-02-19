@@ -105,12 +105,15 @@ object ChatServer {
         rooms[data.roomCode]?.isVideoPlaying = data.isVideoPlaying
     }
 
-    fun disconnect(roomCode: String?, user: User?): List<User>? {
+    fun disconnect(roomCode: String?, user: User?): Pair<List<User>?, Int> {
         if (rooms[roomCode]?.members?.any { it.name == user?.name } == true)
             rooms[roomCode]?.members?.removeIf { it.name == user?.name }
-        if (rooms[roomCode]?.members?.isEmpty() == true)
+        val members = rooms[roomCode]?.members
+        if (user?.name == rooms[roomCode]?.creator?.name || members?.isEmpty() == true) {
             rooms.remove(roomCode)
-        return rooms[roomCode]?.members
+            return Pair(members, 0)
+        }
+        return Pair(members, members?.size ?: 0)
     }
 
     private fun getRandomName(): String = Faker().funnyName().name()
