@@ -28,7 +28,8 @@ object ChatServer {
             videoInRoom = data.message,
             isVideoPlaying = true,
             appVersion = data.appVersion,
-            currentTime = 0 // would have been gone far ahead by the time next user joins. So... lets see
+            currentTime = 0, // would have gone far ahead by the time next user joins. So... lets see
+            videoDuration = data.info
         )
         println("Room created with code: $roomCode")
         return MessageData(
@@ -44,7 +45,8 @@ object ChatServer {
                 return MessageData(
                     channel = "join-room",
                     roomCode = data.roomCode,
-                    message = "App versions do not match", err = true
+                    message = "App versions do not match",
+                    err = true
                 )
             if (rooms[data.roomCode]?.members?.contains(user) == true)
                 return MessageData(
@@ -60,7 +62,7 @@ object ChatServer {
                 channel = "join-room",
                 user = User(randomName, user.isAdmin),
                 roomCode = data.roomCode,
-                message = rooms[data.roomCode]?.videoInRoom ?: "",
+                message = data.message,
                 info = data.info,
                 nUsers = rooms[data.roomCode]?.members?.size,
                 isVideoPlaying = rooms[data.roomCode]?.isVideoPlaying,
@@ -68,6 +70,25 @@ object ChatServer {
             )
         } else
             return MessageData(channel = "join-room", message = "Room does not exist", err = true)
+    }
+
+    fun getRoom(data: MessageData): MessageData {
+        if (rooms.containsKey(data.roomCode)) {
+            if (rooms[data.roomCode]?.appVersion?.equals(data.appVersion) == false)
+                return MessageData(
+                    channel = "get-room",
+                    roomCode = data.roomCode,
+                    message = "App versions do not match",
+                    err = true
+                )
+            return MessageData(
+                channel = "get-room",
+                roomCode = data.roomCode,
+                message = rooms[data.roomCode]?.videoInRoom ?: "",
+                info = rooms[data.roomCode]?.videoDuration
+            )
+        } else
+            return MessageData(channel = "get-room", message = "Room does not exist", err = true)
     }
 
     fun getMembers(roomCode: String, user: User): List<User>? {

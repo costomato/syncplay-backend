@@ -55,7 +55,7 @@ fun Application.configureSockets() {
                             if (response.err == true)
                                 send(response.convertToFrame())
                             else {
-                                val sockets = response.roomCode?.let {
+                                val members = response.roomCode?.let {
                                     response.user?.let { it1 ->
                                         ChatServer.getMembers(
                                             roomCode = it,
@@ -63,10 +63,15 @@ fun Application.configureSockets() {
                                         )
                                     }
                                 }
-                                sockets?.forEach {
+                                members?.forEach {
                                     it.socket?.send(response.convertToFrame())
                                 }
                             }
+                        }
+
+                        "get-room" -> {
+                            val response = ChatServer.getRoom(data)
+                            send(response.convertToFrame())
                         }
 
                         "chat" -> {
